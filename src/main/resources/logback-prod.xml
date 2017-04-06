@@ -1,0 +1,38 @@
+<!--
+    Logback config for PROD
+    this logback configuration will push logs to Sentry on ERRORs
+    this file is added on ./run with the sbt flag -Dlogback.configurationFile depending on the environment variable MODE
+-->
+<configuration>
+    <!-- Sentry configuration
+        Logs will be only be push to Sentry on level > WARN (not info or debug)
+    -->
+    <appender name="Sentry" class="com.getsentry.raven.logback.SentryAppender">
+        <dsn>https://SENTRY_URL</dsn>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>scalarest.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n  </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n  </pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="Sentry" />
+
+    </root>
+
+</configuration>

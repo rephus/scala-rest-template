@@ -1,0 +1,4 @@
+#!/bin/bash
+PGPASSWORD=postgres \
+psql -h postgres -U postgres -c "CREATE DATABASE scalarest_test"
+./sbt coverage test it:test coverageReport

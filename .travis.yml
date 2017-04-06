@@ -1,0 +1,32 @@
+language: scala
+scala:
+   - 2.11.6
+env:
+  DOCKER_COMPOSE_VERSION: 1.7.1
+
+sudo: required
+
+services:
+  - docker
+
+# Install docker-compose https://docs.travis-ci.com/user/docker#Using-Docker-Compose
+before_install:
+  - sudo rm -f /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+before_script:
+  - docker-compose build
+
+script:
+   - docker-compose up -d postgres
+   - docker-compose run scalarest ./test
+
+cache:
+  directories:
+  - $HOME/.sbt
+  - $HOME/.ivy2
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -t <codecov_key>

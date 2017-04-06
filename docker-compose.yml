@@ -1,0 +1,25 @@
+scalarest:
+  build: .
+  ports:
+    - "80:80"
+  volumes:
+      - .:/code
+      - ~/.ivy2:/root/.ivy2 #Keep downloaded dependencies locally
+      - ~/.sbt:/root/.sbt
+  links:
+    - postgres
+    - redis
+
+redis:
+  image: redis:2
+  expose:
+    - "6379"
+
+postgres:
+  image: postgres
+  volumes:
+    - /var/lib/postgresql/data
+  expose:
+    - "5432"
+  environment:
+      - POSTGRES_PASSWORD=postgres
